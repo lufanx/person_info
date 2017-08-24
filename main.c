@@ -18,6 +18,62 @@ struct par{
     int age;
 };
 
+typedef struct user{
+    char user_name[10];
+    char user_password[10];
+    char user_address[20];
+    int user_age;
+
+}User;
+
+void
+user_register() {
+    User user_info;
+    
+    memset(&user_info, 0, sizeof(user_info));
+    
+    printf("New user register function:\n");
+    printf("Please stdin your username:");
+    scanf("%s",user_info.user_name);
+    printf("Please stdin your userpassword:");
+    scanf("%s",user_info.user_password);
+    printf("Please stdin your useraddress:");
+    scanf("%s",user_info.user_address);
+    printf("Please stdin your userage:");
+    scanf("%d", &user_info.user_age);
+    
+    printf("This your user info:\n");
+    printf("user_name: %s\n", user_info.user_name);
+    printf("user_address: %s\n", user_info.user_address);
+    printf("user_age: %d\n", user_info.user_age);
+    
+    return;
+}
+
+int
+select_menu() {
+    
+    int number = 0;
+    printf("Select menu:\n");
+    
+    printf("1: new user register.\n");
+    printf("2: sign in.\n");
+    
+    printf("#########\n");
+    printf("Please select: ");
+    scanf("%d", &number);
+    
+    switch(number) {
+        case 1:
+            user_register();
+            break;
+        default:
+            fprintf(stderr, "Please select true number:\n");
+            return -1;
+    }
+    
+    return 0;
+}
 
 static void
 usage(const char *parse_name) {
@@ -67,9 +123,15 @@ int
 main(int argc, char *argv[]) {
 
     int rc;
+    int menu_status;
     struct par person_info;
     
     memset(&person_info, 0, sizeof(person_info));
+    
+    menu_status = select_menu();
+    if(menu_status) {
+        return -1;
+    }
     
     rc = parse_argc(argc, argv, &person_info);
     if(rc != 0) {
