@@ -7,24 +7,14 @@
 //
 
 
-#include <stdio.h>
-#include <string.h>	// memset()
-#include <unistd.h>	// getopt()
-#include <stdlib.h>	// atoi()
+#include "init.h"
+#include "person_mysql.h"
 
 struct par{
     char *name;
     char *sex;
     int age;
 };
-
-typedef struct user{
-    char user_name[10];
-    char user_password[10];
-    char user_address[20];
-    int user_age;
-
-}User;
 
 void
 user_register() {
@@ -35,6 +25,8 @@ user_register() {
     printf("New user register function:\n");
     printf("Please stdin your username:");
     scanf("%s",user_info.user_name);
+    printf("Please stdin your usersex:");
+    scanf("%s", user_info.user_sex);
     printf("Please stdin your userpassword:");
     scanf("%s",user_info.user_password);
     printf("Please stdin your useraddress:");
@@ -46,6 +38,8 @@ user_register() {
     printf("user_name: %s\n", user_info.user_name);
     printf("user_address: %s\n", user_info.user_address);
     printf("user_age: %d\n", user_info.user_age);
+    
+    mysql_operate(&user_info);
     
     return;
 }
