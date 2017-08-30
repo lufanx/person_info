@@ -10,6 +10,12 @@
 #include "init.h"
 #include "person_mysql.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+
 struct par{
     char *name;
     char *sex;
@@ -23,6 +29,8 @@ user_register() {
     memset(&user_info, 0, sizeof(user_info));
     
     printf("New user register function:\n");
+    printf("Please stdin your userid:");
+    scanf("%d",&user_info.user_id);
     printf("Please stdin your username:");
     scanf("%s",user_info.user_name);
     printf("Please stdin your usersex:");
@@ -114,7 +122,7 @@ parse_argc(int argc, char *argv[], struct par *get_person_info) {
 }
 
 int
-main(int argc, char *argv[]) {
+main(int argc, char **argv) {
 
     int rc;
     int menu_status;
@@ -138,6 +146,6 @@ main(int argc, char *argv[]) {
     printf("    age:%d\n", person_info.age);
     printf("\n");
     
-    return 0;
+    return 1;
     
 }

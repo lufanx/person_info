@@ -9,13 +9,8 @@
 #ifndef init_h
 #define init_h
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
 typedef struct user{
-    char user_id[4];
+    int user_id;
     char user_name[10];
     char user_sex[4];
     char user_password[10];
