@@ -16,7 +16,7 @@
 
 // mysql stdio person_info.
 typedef struct user{
-    char user_id[4];
+    int user_id;
     char user_name[10];
     char user_sex[4];
     char user_password[10];
@@ -28,7 +28,7 @@ typedef struct user{
 struct par{
 	char *name;
 	char *sex;
-	const char *mysql_config;
+	//const char *mysql_config;
 	int age;
 };
 

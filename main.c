@@ -26,7 +26,7 @@ user_register() {
     
     printf("New user register function:\n");
     printf("Please stdin your userid:");
-    scanf("%s",user_info.user_id);
+    scanf("%d",&user_info.user_id);
     printf("Please stdin your username:");
     scanf("%s",user_info.user_name);
     printf("Please stdin your usersex:");
@@ -43,7 +43,8 @@ user_register() {
     printf("user_address: %s\n", user_info.user_address);
     printf("user_age: %d\n", user_info.user_age);
     
-    mysql_operate(&user_info);
+    //mysql_operate(&user_info);
+	read_mysqlconfig(&user_info);
     
     return;
 }
@@ -117,10 +118,10 @@ parse_argc(int argc, char *argv[], struct par *get_person_info) {
                 //get_person_info->age = age;
                 printf("age = %d\n", get_person_info->age);
             break;
-		case 'c':
-	     	get_person_info->mysql_config = optarg;
-	     		printf("mysql_config = %s\n", get_person_info->mysql_config);
-	     break;
+		//case 'c':
+	    // 	get_person_info->mysql_config = optarg;
+	    // 		printf("mysql_config = %s\n", get_person_info->mysql_config);
+	    // break;
         default:
             fprintf(stderr, "invalid parse!\n");
             usage(argv[0]);

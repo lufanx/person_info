@@ -15,7 +15,7 @@
 #include "/usr/local/Cellar/mysql/5.7.19/include/mysql/mysql.h"
 //#include "mysql.h"
 
-
-void mysql_operate(User *user_info);
+void read_mysqlconfig(User *user_info);
+//void mysql_operate(User *user_info);
 
 #endif /* person_mysql_h */
