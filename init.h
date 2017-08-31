@@ -9,14 +9,28 @@
 #ifndef init_h
 #define init_h
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+// mysql stdio person_info.
 typedef struct user{
-    int user_id;
+    char user_id[4];
     char user_name[10];
     char user_sex[4];
     char user_password[10];
     char user_address[20];
     int user_age;
 }User;
+
+// register user info.
+struct par{
+	char *name;
+	char *sex;
+	const char *mysql_config;
+	int age;
+};
 
 
 #endif /* init_h */

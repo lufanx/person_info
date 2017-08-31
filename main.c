@@ -10,27 +10,23 @@
 #include "init.h"
 #include "person_mysql.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
-
-struct par{
-    char *name;
-    char *sex;
-    int age;
-};
+//struct par{
+//    char *name;
+//    char *sex;
+//    const char *mysql_config;
+//    int age;
+//};
 
 void
 user_register() {
+
     User user_info;
     
     memset(&user_info, 0, sizeof(user_info));
     
     printf("New user register function:\n");
     printf("Please stdin your userid:");
-    scanf("%d",&user_info.user_id);
+    scanf("%s",user_info.user_id);
     printf("Please stdin your username:");
     scanf("%s",user_info.user_name);
     printf("Please stdin your usersex:");
@@ -56,6 +52,7 @@ int
 select_menu() {
     
     int number = 0;
+
     printf("Select menu:\n");
     
     printf("1: new user register.\n");
@@ -79,6 +76,7 @@ select_menu() {
 
 static void
 usage(const char *parse_name) {
+
     printf("%s, [options]", parse_name);
     printf("\n");
     printf("options:");
@@ -87,6 +85,7 @@ usage(const char *parse_name) {
     printf("-n     person_info_name\n");
     printf("-s     person_info_sex\n");
     printf("-a     person_info_age\n");
+    printf("-c     person_info_mysql_config\n");
 
 }
 
@@ -96,8 +95,14 @@ parse_argc(int argc, char *argv[], struct par *get_person_info) {
     int op;
     
     memset(get_person_info, 0, sizeof(*get_person_info));
+
+	if(argc <= 1) {
+		printf("your stdin parameter too less!\n");
+		usage(argv[0]);
+		return -1;
+	}
     
-    while((op = getopt(argc, argv, "n:s:a:")) != -1) {
+    while((op = getopt(argc, argv, "n:s:a:c:")) != -1) {
         switch(op) {
         case 'n':
             get_person_info->name = optarg;
@@ -112,6 +117,10 @@ parse_argc(int argc, char *argv[], struct par *get_person_info) {
                 //get_person_info->age = age;
                 printf("age = %d\n", get_person_info->age);
             break;
+		case 'c':
+	     	get_person_info->mysql_config = optarg;
+	     		printf("mysql_config = %s\n", get_person_info->mysql_config);
+	     break;
         default:
             fprintf(stderr, "invalid parse!\n");
             usage(argv[0]);
@@ -122,30 +131,25 @@ parse_argc(int argc, char *argv[], struct par *get_person_info) {
 }
 
 int
-main(int argc, char **argv) {
+main(int argc, char **argv)
+{
 
     int rc;
     int menu_status;
     struct par person_info;
     
     memset(&person_info, 0, sizeof(person_info));
+
+    rc = parse_argc(argc, argv, &person_info);
+    if(rc != 0) {
+        return rc;
+    }
     
     menu_status = select_menu();
     if(menu_status) {
         return -1;
     }
     
-    rc = parse_argc(argc, argv, &person_info);
-    if(rc != 0) {
-        return rc;
-    }
-    
-    printf("%s is info:\n", person_info.name);
-    printf("    name:%s\n", person_info.name);
-    printf("    sex:%s\n", person_info.sex);
-    printf("    age:%d\n", person_info.age);
-    printf("\n");
-    
-    return 1;
+    return 0;
     
 }
