@@ -12,7 +12,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LINE 100
+#define MAX_LINE 1024
+#define CONFIG 100
 
 void mysql_operate(User *user_info, const char *key_database, const char *key_table);
 
@@ -20,18 +21,20 @@ void
 read_mysqlconfig(User *user_info) {
 
 	FILE *pf;
-	char fline[MAX_LINE];
+	char fline[MAX_LINE] = "";
+	char *result;
+	char *delims = "=";
+	int n = 0;
+	char database[CONFIG] = "";
+	char table[CONFIG] = "";
+	char *p = NULL;
+	char *q = NULL;
+	char *m = NULL;
 	int fsize = 0;
-	char delims[] = "=";
-	char *result = NULL;
-	int select_values = 0;
-	char *key_database = NULL;
-	char *key_table = NULL;
-	int check_file = 0;
 
 	pf = fopen("mysql_config", "r");
 	if(pf == NULL) {
-		fprintf(stderr, "read mysql config failed!\n");
+		fprintf(stderr, "read config failed!\n");
 		return;
 	}
 
@@ -44,28 +47,37 @@ read_mysqlconfig(User *user_info) {
 	}
 	else {
 		fseek(pf, 0, SEEK_SET);
-		while(!feof(pf)) {
-			fgets(fline, MAX_LINE, pf);
-			check_file += 1;
-			if(check_file == 3) {
-				break;
+		while(fgets(fline, MAX_LINE, pf) != NULL) {
+			m = fline;
+			if(*m == '#' || *m == '\n' || *m == '[') {
+				continue;
 			}
 			result = strtok(fline, delims);
 			while(result != NULL) {
-				if(select_values == 1) {
-					key_database = result;
+				if(n == 1) {
+					strncpy(database, result, CONFIG);
+					p = database;
+					while(*p != '\n' && *p != ' ') {
+						p++;
+					}
+					*p = '\0';
 				}
-				if(select_values == 3) {
-					key_table = result;
+				if(n == 3) {
+					strncpy(table, result, CONFIG);
+					q = table;
+					while(*q != '\n' && *q != ' ') {
+						q++;
+					}
+					*q = '\0';
 				}
-				select_values += 1;
 				result = strtok(NULL, delims);
+				n += 1;
 			}
 		}
-
 	}
+
 	fclose(pf);
-	mysql_operate(user_info, key_database, key_table);
+	mysql_operate(user_info, database, table);
 	return;
 }
 
@@ -76,11 +88,9 @@ mysql_operate(User *user_info, const char *key_database, const char *key_table) 
     MYSQL m_conn;
     int ret;
     //int id = 1;
-    
     char sql_insert[300];
     
-    sprintf(sql_insert, "insert into '%s' (id, name, sex, age, password, address) values('%d', '%s', '%s', '%d', '%s', '%s')", key_table, user_info->user_id, user_info->user_name, user_info->user_sex, user_info->user_age, user_info->user_password, user_info->user_address);
-    
+    sprintf(sql_insert, "insert into %s (id, name, sex, age, password, address) values('%d', '%s', '%s', '%d', '%s', '%s')", key_table, user_info->user_id, user_info->user_name, user_info->user_sex, user_info->user_age, user_info->user_password, user_info->user_address);
     mysql_init(&m_conn);
     if(mysql_real_connect(&m_conn, "localhost", "root", "fl1328", key_database, 0, NULL, 0)) {
         printf("mysql connect success!\n");
