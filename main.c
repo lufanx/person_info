@@ -17,8 +17,44 @@
 //    int age;
 //};
 
+int select_menu(struct mysql_config*);
+
+
 void
-user_register() {
+user_register(struct mysql_config *mysql_config_info) {
+	struct user user_info;
+
+	memset(&user_info, 0, sizeof(user_info));
+
+	printf("Please stdin your user_name:");
+	scanf("%s", user_info.user_name);
+	printf("Please stdin your user_password:");
+	scanf("%s", user_info.user_password);
+
+	printf("%s\n", user_info.user_name);
+	printf("%s\n", user_info.user_password);
+
+	insert_mysql_register(&user_info, mysql_config_info);
+	
+	return;
+}
+
+void
+sign_in() {
+
+	char name[10];
+	char password[7];
+	
+	printf("Please stdin your user_name:");
+	scanf("%s", name);
+	printf("Please stdin your user_password:");
+	scanf("%s", password);
+	
+	return;
+}
+
+void
+insert_info(struct mysql_config *insert_info) {
 
     User user_info;
     
@@ -43,34 +79,56 @@ user_register() {
     printf("user_address: %s\n", user_info.user_address);
     printf("user_age: %d\n", user_info.user_age);
     
-    //mysql_operate(&user_info);
-	read_mysqlconfig(&user_info);
+    insert_mysql(insert_info, &user_info);
     
     return;
 }
 
-int
-select_menu() {
-    
-    int number = 0;
+static int
+menu(struct mysql_config *mysql_config_info) {
+
+	int ret;
 
     printf("Select menu:\n");
     
     printf("1: new user register.\n");
     printf("2: sign in.\n");
+	printf("3: insert your info.\n");
+	printf("4: sign out.\n");
+
+	ret = select_menu(mysql_config_info);
+	if(ret == -1) {
+		return -1;
+	}
+	return 1;
+}
+
+int
+select_menu(struct mysql_config *mysql_config_info) {
     
+    int number = 0;
+
     printf("#########\n");
     printf("Please select: ");
     scanf("%d", &number);
     
     switch(number) {
         case 1:
-            user_register();
+            user_register(mysql_config_info);
             break;
+		case 2:
+			sign_in();
+			break;
+		case 3:
+			insert_info(mysql_config_info);
+			break;
+		case 4:
+			return -1;
         default:
             fprintf(stderr, "Please select true number:\n");
             return -1;
     }
+	menu(mysql_config_info);
     
     return 0;
 }
@@ -90,7 +148,7 @@ usage(const char *parse_name) {
 
 }
 
-int
+static int
 parse_argc(int argc, char *argv[], struct par *get_person_info) {
 
     int op;
@@ -103,20 +161,20 @@ parse_argc(int argc, char *argv[], struct par *get_person_info) {
 		return -1;
 	}
     
-    while((op = getopt(argc, argv, "n:s:a:c:")) != -1) {
+    while((op = getopt(argc, argv, "n:s:a:")) != -1) {
         switch(op) {
         case 'n':
             get_person_info->name = optarg;
-                printf("name = %s\n", get_person_info->name);
+                //printf("name = %s\n", get_person_info->name);
             break;
         case 's':
             get_person_info->sex = optarg;
-                printf("sex = %s\n", get_person_info->sex);
+                //printf("sex = %s\n", get_person_info->sex);
             break;
         case 'a':
              get_person_info->age = atoi(optarg);
                 //get_person_info->age = age;
-                printf("age = %d\n", get_person_info->age);
+                //printf("age = %d\n", get_person_info->age);
             break;
 		//case 'c':
 	    // 	get_person_info->mysql_config = optarg;
@@ -136,8 +194,10 @@ main(int argc, char **argv)
 {
 
     int rc;
-    int menu_status;
+	int select_ret;
     struct par person_info;
+	struct mysql_config *mysql_config_info;
+	struct mysql_config info;
     
     memset(&person_info, 0, sizeof(person_info));
 
@@ -145,11 +205,13 @@ main(int argc, char **argv)
     if(rc != 0) {
         return rc;
     }
+
+	mysql_config_info = read_mysqlconfig(&info);
     
-    menu_status = select_menu();
-    if(menu_status) {
-        return -1;
-    }
+    select_ret = menu(mysql_config_info);
+	if(select_ret == -1) {
+		return -1;
+	}
     
     return 0;
     

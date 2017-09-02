@@ -1,2 +1,10 @@
+#This about your mysql config file.
+
+#your mysql of database.
 database=person_bank
+
+#your mysql of operation table.
 table=person_info
+
+#user register table.
+user_register=user_register

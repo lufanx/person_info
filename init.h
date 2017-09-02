@@ -15,7 +15,7 @@
 #include <unistd.h>
 
 // mysql stdio person_info.
-typedef struct user{
+typedef struct mysql_info{
     int user_id;
     char user_name[10];
     char user_sex[4];
@@ -30,6 +30,11 @@ struct par{
 	char *sex;
 	//const char *mysql_config;
 	int age;
+};
+
+struct user{
+	char user_name[10];
+	char user_password[7];
 };
 
 
