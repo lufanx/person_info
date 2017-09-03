@@ -40,8 +40,8 @@ user_register(struct mysql_config *mysql_config_info) {
 }
 
 void
-sign_in() {
-
+sign_in(struct mysql_config *sign_in) {
+/*
 	char name[10];
 	char password[7];
 	
@@ -49,6 +49,8 @@ sign_in() {
 	scanf("%s", name);
 	printf("Please stdin your user_password:");
 	scanf("%s", password);
+*/
+	select_mysql_sign_in(sign_in);
 	
 	return;
 }
@@ -117,7 +119,7 @@ select_menu(struct mysql_config *mysql_config_info) {
             user_register(mysql_config_info);
             break;
 		case 2:
-			sign_in();
+			sign_in(mysql_config_info);
 			break;
 		case 3:
 			insert_info(mysql_config_info);

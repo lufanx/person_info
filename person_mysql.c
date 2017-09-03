@@ -134,7 +134,6 @@ insert_mysql(struct mysql_config *insert_info, User *user_info) {
     
     sprintf(sql_insert, "insert into %s (id, name, sex, age, password, address) values('%d', '%s', '%s', '%d', '%s', '%s')", insert_info->info_table, user_info->user_id, user_info->user_name, user_info->user_sex, user_info->user_age, user_info->user_password, user_info->user_address);
     mysql_init(&m_conn);
-	printf("&&&&&&&&&&&&&&\n");
     if(mysql_real_connect(&m_conn, "localhost", "root", "fl1328", insert_info->database, 0, NULL, 0)) {
         printf("mysql connect success!\n");
         ret = mysql_query(&m_conn, sql_insert);
@@ -153,5 +152,48 @@ insert_mysql(struct mysql_config *insert_info, User *user_info) {
     
 
     return;
+}
+
+void
+select_mysql_sign_in(struct mysql_config *sign_in) {
+
+
+	printf("@@@@@@@@@@@@@\n");
+	MYSQL m_conn;
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	int ret;
+	int i = 0;
+	char sql_select[100];
+
+	sprintf(sql_select, "select name from %s", sign_in->user_register);
+	printf("@@@@@@@@@@@\n");
+	mysql_init(&m_conn);
+	if(mysql_real_connect(&m_conn, "localhost", "root", "fl1328", sign_in->database, 0, NULL, 0)) {
+		printf("mysql connect success!\n");
+		ret = mysql_query(&m_conn, sql_select);
+		if(!ret) {
+			printf("select data success!\n");
+			res = mysql_store_result(&m_conn);
+			while((row = mysql_fetch_row(res))) {
+				for(i = 0; i < res->field_count; i++) {
+					printf("##########\n");
+					printf("%s ", row[i]);
+				}
+				printf("\n");
+			}
+			mysql_free_result(res);
+		}
+		else {
+			fprintf(stderr, "select data failed!\n");
+		}
+	}
+	else {
+		fprintf(stderr, "mysql connect failed!\n");
+		mysql_close(&m_conn);
+	}
+	
+	mysql_close(&m_conn);
+	return;
 }
 
