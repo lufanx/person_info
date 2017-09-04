@@ -91,6 +91,49 @@ read_mysqlconfig(struct mysql_config *info) {
 	return info;
 }
 
+char *
+return_id(struct mysql_config *return_id) {
+	MYSQL m_conn;
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+	int ret;
+	int i;
+	char *id = NULL;
+	char sql_return_id[100];
+
+	sprintf(sql_return_id, "select id from %s order by id desc limit 1", return_id->info_table);
+	mysql_init(&m_conn);
+	if(mysql_real_connect(&m_conn, "localhost", "root", "fl1328", return_id->database, 0, NULL, 0)) {
+		printf("mysql connect success!\n");
+		ret = mysql_query(&m_conn, sql_return_id);
+		if(!ret) {
+			printf("mysql return id success!\n");
+			res = mysql_store_result(&m_conn);
+			while((row = mysql_fetch_row(res))) {
+				for(i = 0; i < res->field_count; i++) {
+					printf("$$$$$$$$$\n");
+					printf("%s\n", row[i]);
+					id = row[i];
+					printf("$$$$$$$$$\n");
+				}
+			}
+		}
+		else {
+			fprintf(stderr, "mysql return i failed!\n");
+			mysql_close(&m_conn);
+			return NULL;
+		}
+	}
+	else{
+		fprintf(stderr, "mysql connect failed!\n");
+	}
+
+	mysql_close(&m_conn);
+	
+	return id;
+	
+}
+
 void
 insert_mysql_register(struct user *user_info, struct mysql_config *mysql_config_info) {
 
@@ -155,19 +198,17 @@ insert_mysql(struct mysql_config *insert_info, User *user_info) {
 }
 
 void
-select_mysql_sign_in(struct mysql_config *sign_in) {
+select_mysql_sign_in(struct mysql_config *sign_in, const char *user_name, const char *user_password) {
 
-
-	printf("@@@@@@@@@@@@@\n");
 	MYSQL m_conn;
 	MYSQL_RES *res;
 	MYSQL_ROW row;
 	int ret;
 	int i = 0;
 	char sql_select[100];
+	int status = 0;
 
-	sprintf(sql_select, "select name from %s", sign_in->user_register);
-	printf("@@@@@@@@@@@\n");
+	sprintf(sql_select, "select name from %s where password = %s", sign_in->user_register, user_password);
 	mysql_init(&m_conn);
 	if(mysql_real_connect(&m_conn, "localhost", "root", "fl1328", sign_in->database, 0, NULL, 0)) {
 		printf("mysql connect success!\n");
@@ -177,10 +218,24 @@ select_mysql_sign_in(struct mysql_config *sign_in) {
 			res = mysql_store_result(&m_conn);
 			while((row = mysql_fetch_row(res))) {
 				for(i = 0; i < res->field_count; i++) {
-					printf("##########\n");
-					printf("%s ", row[i]);
+					printf("$$$$$$$$$\n");
+					printf("%s\n", row[i]);
+					printf("len = %ld\n", strlen(row[i]));
+					printf("$$$$$$$$$\n");
+					if(!strcmp(user_name, row[i])) {
+						printf("_________\n");
+						status = 1;
+					}
 				}
-				printf("\n");
+			}
+			if(status == 1) {
+				printf("########\n");
+				printf("your user_name and user_password is ok!\n");
+				printf("########\n");
+			}
+			else {
+				fprintf(stderr, "your user_name or your user_password is error!\n");
+			
 			}
 			mysql_free_result(res);
 		}

@@ -41,7 +41,7 @@ user_register(struct mysql_config *mysql_config_info) {
 
 void
 sign_in(struct mysql_config *sign_in) {
-/*
+
 	char name[10];
 	char password[7];
 	
@@ -49,8 +49,8 @@ sign_in(struct mysql_config *sign_in) {
 	scanf("%s", name);
 	printf("Please stdin your user_password:");
 	scanf("%s", password);
-*/
-	select_mysql_sign_in(sign_in);
+
+	select_mysql_sign_in(sign_in, name, password);
 	
 	return;
 }
@@ -59,11 +59,15 @@ void
 insert_info(struct mysql_config *insert_info) {
 
     User user_info;
+	char *id;
     
     memset(&user_info, 0, sizeof(user_info));
+
+	id = return_id(insert_info);
+	printf("mysql laster id = %s\n", id);
     
     printf("New user register function:\n");
-    printf("Please stdin your userid:");
+    printf("Please stdin your userid must is laster id+1:");
     scanf("%d",&user_info.user_id);
     printf("Please stdin your username:");
     scanf("%s",user_info.user_name);
