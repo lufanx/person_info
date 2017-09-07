@@ -282,13 +282,7 @@ alter_table(struct mysql_config *alter, char *queue_name, char *queue_type) {
 	int ret;
 	MYSQL m_conn;
 
-	//mysql_init(&m_conn);
-
-	printf("8888888888888\n");
-	printf("%s\n", queue_name);
-	printf("%s\n", queue_type);
 	sprintf(alter_table_queue, "alter table %s add column %s %s", alter->info_table, queue_name, queue_type);
-	printf("===========\n");
 	mysql_init(&m_conn);
 	if(mysql_real_connect(&m_conn, "localhost", "root", "fl1328", alter->database, 0, NULL, 0)) {
 		printf("mysql connect!\n");
@@ -302,7 +296,6 @@ alter_table(struct mysql_config *alter, char *queue_name, char *queue_type) {
 			return;
 		}
 	}
-	//printf("------------\n");
 	else {
 		fprintf(stderr, "mysql connect failed!\n");
 		mysql_close(&m_conn);
