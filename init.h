@@ -21,6 +21,7 @@ typedef struct mysql_info{
     char user_sex[4];
     char user_password[10];
     char user_address[20];
+	char user_date[12];
     int user_age;
 }User;
 

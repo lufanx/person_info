@@ -16,6 +16,7 @@
 #define MAX_LINE 1024
 
 
+
 struct mysql_config *
 read_mysqlconfig(struct mysql_config *info) {
 
@@ -175,7 +176,7 @@ insert_mysql(struct mysql_config *insert_info, User *user_info) {
     char sql_insert[300];
 
     
-    sprintf(sql_insert, "insert into %s (id, name, sex, age, password, address) values('%d', '%s', '%s', '%d', '%s', '%s')", insert_info->info_table, user_info->user_id, user_info->user_name, user_info->user_sex, user_info->user_age, user_info->user_password, user_info->user_address);
+    sprintf(sql_insert, "insert into %s (id, name, sex, age, password, address, time) values('%d', '%s', '%s', '%d', '%s', '%s', '%s')", insert_info->info_table, user_info->user_id, user_info->user_name, user_info->user_sex, user_info->user_age, user_info->user_password, user_info->user_address, user_info->user_date);
     mysql_init(&m_conn);
     if(mysql_real_connect(&m_conn, "localhost", "root", "fl1328", insert_info->database, 0, NULL, 0)) {
         printf("mysql connect success!\n");
@@ -196,6 +197,28 @@ insert_mysql(struct mysql_config *insert_info, User *user_info) {
 
     return;
 }
+
+/*
+void
+mysql_connect(struct mysql_config *alter_connect) {
+
+	MYSQL m_conn;
+
+	mysql_init(&m_conn);
+	if(mysql_real_connect(&m_conn, "localhost", "root", "fl1328", alter_connect->database, 0, NULL, 0)) {
+		printf("mysql connect!\n");
+	}
+	else {
+		fprintf(stderr, "mysql connect failed!\n");
+		mysql_close(&m_conn);
+		return;
+	}
+
+	mysql_
+	return;
+}
+*/
+
 
 void
 select_mysql_sign_in(struct mysql_config *sign_in, const char *user_name, const char *user_password) {
@@ -249,6 +272,44 @@ select_mysql_sign_in(struct mysql_config *sign_in, const char *user_name, const 
 	}
 	
 	mysql_close(&m_conn);
+	return;
+}
+
+void
+alter_table(struct mysql_config *alter, char *queue_name, char *queue_type) {
+	
+	char alter_table_queue[100];
+	int ret;
+	MYSQL m_conn;
+
+	//mysql_init(&m_conn);
+
+	printf("8888888888888\n");
+	printf("%s\n", queue_name);
+	printf("%s\n", queue_type);
+	sprintf(alter_table_queue, "alter table %s add column %s %s", alter->info_table, queue_name, queue_type);
+	printf("===========\n");
+	mysql_init(&m_conn);
+	if(mysql_real_connect(&m_conn, "localhost", "root", "fl1328", alter->database, 0, NULL, 0)) {
+		printf("mysql connect!\n");
+		ret = mysql_query(&m_conn, alter_table_queue);
+		if(!ret) {
+			printf("alter table success!\n");
+		}
+		else {
+			fprintf(stderr, "alter table failed!\n");
+			mysql_close(&m_conn);
+			return;
+		}
+	}
+	//printf("------------\n");
+	else {
+		fprintf(stderr, "mysql connect failed!\n");
+		mysql_close(&m_conn);
+		return;
+	}
+	mysql_close(&m_conn);
+
 	return;
 }
 

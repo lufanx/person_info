@@ -56,6 +56,25 @@ sign_in(struct mysql_config *sign_in) {
 }
 
 void
+alter_table_queue(struct mysql_config *alter) {
+	
+	char queue_name[10];
+	char queue_type[15];
+
+	printf("Please stdin your queue name:");
+	scanf("%s", queue_name);
+	printf("Please stdin your queue type:");
+	scanf("%s", queue_type);
+
+	printf("%s\n", queue_name);
+	printf("%s\n", queue_type);
+
+	alter_table(alter, queue_name, queue_type);
+
+	return;
+}
+
+void
 insert_info(struct mysql_config *insert_info) {
 
     User user_info;
@@ -79,6 +98,8 @@ insert_info(struct mysql_config *insert_info) {
     scanf("%s",user_info.user_address);
     printf("Please stdin your userage:");
     scanf("%d", &user_info.user_age);
+    printf("Please stdin your date:");
+    scanf("%s", user_info.user_date);
     
     printf("This your user info:\n");
     printf("user_name: %s\n", user_info.user_name);
@@ -100,7 +121,8 @@ menu(struct mysql_config *mysql_config_info) {
     printf("1: new user register.\n");
     printf("2: sign in.\n");
 	printf("3: insert your info.\n");
-	printf("4: sign out.\n");
+	printf("4: alter table queue.\n");
+	printf("5: sign out.\n");
 
 	ret = select_menu(mysql_config_info);
 	if(ret == -1) {
@@ -129,6 +151,9 @@ select_menu(struct mysql_config *mysql_config_info) {
 			insert_info(mysql_config_info);
 			break;
 		case 4:
+			alter_table_queue(mysql_config_info);
+			break;
+		case 5:
 			return -1;
         default:
             fprintf(stderr, "Please select true number:\n");
